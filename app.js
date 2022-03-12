@@ -8,10 +8,13 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const app = express();
 const dbService = require('./services/dbService');
-const RagisterUserRouter =require('./routes/User')
+const RagisterUserRouter = require('./routes/User')
 const UserDetailRouter = require('./routes/User')
 const UpdateUserDetailRouter = require('./routes/User')
 const DeleteUserDetailRouter = require('./routes/User')
+
+const SignUpRouter = require('./routes/User')
+const LoginRouter = require('./routes/User')
 
 dbService().startDev();
 app.use(cors());
@@ -23,19 +26,22 @@ app.use(
 		extended: true,
 		parameterLimit: 50000,
 	})
- );
+);
 
 app.use(logger('dev'));
- app.use(express.json());
+app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/api/amit', RagisterUserRouter );
-app.use('/api/amit', UserDetailRouter );
-app.use('/api/amit', UpdateUserDetailRouter );
-app.use('/api/amit', DeleteUserDetailRouter );
+app.use('/api/amit', RagisterUserRouter);
+app.use('/api/amit', UserDetailRouter);
+app.use('/api/amit', UpdateUserDetailRouter);
+app.use('/api/amit', DeleteUserDetailRouter);
 
+//Public and Priate API Of Login
+app.use('/api/publicapi', SignUpRouter);
+app.use('/api/privateapi', LoginRouter);
 // error handler
 app.use(function (err, req, res, next) {
 	// set locals, only providing error in development

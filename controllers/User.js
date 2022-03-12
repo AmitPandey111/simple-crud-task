@@ -1,17 +1,19 @@
 const AmitPandey = require('../models/User')
 const { get: _get } = require('lodash');
+const { jwtTokens } = require('../utils/jsonWebToken/jwt')
+
 
 const getPagination = (page, size) => {
-    const limit = size ? +size : 100;
-    const offset = page ? page * limit : 0;
-    return { limit, offset };
+	const limit = size ? +size : 100;
+	const offset = page ? page * limit : 0;
+	return { limit, offset };
 };
 
 const getPagingData = (data, page, limit) => {
-    const { count: totalItems, rows: Data } = data;
-    const currentPage = page ? +page : 0;
-    const totalPages = Math.ceil(totalItems / limit);
-    return { totalItems, Data, totalPages, currentPage };
+	const { count: totalItems, rows: Data } = data;
+	const currentPage = page ? +page : 0;
+	const totalPages = Math.ceil(totalItems / limit);
+	return { totalItems, Data, totalPages, currentPage };
 };
 
 const formatUserRes = (data) => {
@@ -19,46 +21,46 @@ const formatUserRes = (data) => {
 	return data;
 };
 const formatUserCrudReq = (data) => {
-    const userKeys = [
-        'name',
-        'email',
-        'phone'
-    ];
+	const userKeys = [
+		'name',
+		'email',
+		'phone'
+	];
 
-    const userObject = {};
+	const userObject = {};
 
-    userKeys.forEach((currKey) => {
-        if (data[currKey] !== undefined) {
-            userObject[currKey] = data[currKey];
-        }
-    });
+	userKeys.forEach((currKey) => {
+		if (data[currKey] !== undefined) {
+			userObject[currKey] = data[currKey];
+		}
+	});
 
-    return userObject;
+	return userObject;
 };
 
 module.exports = {
-    saveUser: (req, res) => {
-        const userData = formatUserCrudReq(req.body);
-        console.log(userData);
-        AmitPandey.create(userData)
-            .then((value) => {
-                res.status(200).json({
-                    message: 'User Details Saved successfully',
-                    data: value,
-                });
-            })
-            .catch((err) => {
-                res.status(500).json({
-                    message: err.message || 'Error in Saving Data',
-                });
-            });
-    },
-    
+	saveUser: (req, res) => {
+		const userData = formatUserCrudReq(req.body);
+		console.log(userData);
+		AmitPandey.create(userData)
+			.then((value) => {
+				res.status(200).json({
+					message: 'User Details Saved successfully',
+					data: value,
+				});
+			})
+			.catch((err) => {
+				res.status(500).json({
+					message: err.message || 'Error in Saving Data',
+				});
+			});
+	},
+
 	getUserById: (req, res) => {
 		const { id } = req.params;
-        console.log(req.params);
+		console.log(req.params);
 		AmitPandey.findByPk(id, {
-		
+
 		})
 			.then((value) => {
 				if (!value) {
@@ -76,10 +78,10 @@ module.exports = {
 			});
 	},
 
-    
+
 	updateUserById: async (req, res) => {
 		const { id } = req.params;
-       console.log(req.params);
+		console.log(req.params);
 		AmitPandey.findByPk(id)
 			.then((currUser) => {
 				if (!currUser) {
@@ -111,7 +113,7 @@ module.exports = {
 				})
 			);
 	},
-    deleteUserById: async (req, res) => {
+	deleteUserById: async (req, res) => {
 		const { id } = req.params;
 
 		AmitPandey.findByPk(id)
@@ -140,5 +142,26 @@ module.exports = {
 					message: err.message || 'Error in Fetching Data',
 				})
 			);
+	},
+
+	signUp: async (req, res) => {
+		try {
+			const userData = formatUserCrudReq(req.body);
+			console.log(userData);
+			const token = await jwtTokens(userData);
+			console.log(token);
+			res.status(200).json({ status: true, code: 200, data: { token: token }, "message": "Public Api Success" });
+		} catch (error) {
+
+		}
+	},
+
+	login: async (req, res) => {
+		try {
+			res.status(200).json({ status: true, code: 200, data: "null", "message": "Private Api Success" });
+		} catch (error) {
+			console.log(error);
+			res.send(error)
+		}
 	},
 };
