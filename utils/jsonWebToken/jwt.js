@@ -29,11 +29,11 @@ exports.verifyToken = async (request, response, next) => {
         if (nonSecurePaths.includes(request.path)) return next();
         const verifyToken = request.headers.authorization.split(" ")[1]; // Bearer & token split by ' ' -->[ ]
         const decode = jwt.verify(verifyToken, JWT_SECRET_KEY);
-        console.log("actualData",decode);
+       // console.log("actualData",decode);
         request.tokenData = decode;
         next();
     } catch (error) {
-       response.status(401).json({ error: 'Invalid token' });
-       next(error);
+       response.status(401).json({ error: 'Invalid token1' });
+      // next(error);
     }
 }

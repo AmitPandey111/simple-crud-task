@@ -147,7 +147,7 @@ module.exports = {
 	signUp: async (req, res) => {
 		try {
 			const userData = formatUserCrudReq(req.body);
-			console.log(userData);
+			console.log("userData",userData);
 			const token = await jwtTokens(userData);
 			console.log(token);
 			res.status(200).json({ status: true, code: 200, data: { token: token }, "message": "Public Api Success" });
